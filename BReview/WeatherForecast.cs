@@ -1,6 +1,6 @@
 using System;
 
-namespace BReview
+namespace BReview.Web
 {
     public class WeatherForecast
     {

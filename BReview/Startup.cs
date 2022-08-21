@@ -1,14 +1,17 @@
 using System;
+using System.Data.Common;
 using System.IO;
 using System.Reflection;
+using BReview.EntityFramework;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
-namespace BReview
+namespace BReview.Web
 {
     public class Startup
     {
@@ -21,6 +24,7 @@ namespace BReview
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionString = Configuration.GetConnectionString("Default");
             services.AddControllers();
             services.AddSwaggerGen(options =>
             {
@@ -33,7 +37,7 @@ namespace BReview
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
-
+            services.AddDbContext<ApplicationDbContext>(o => o.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
